@@ -1,4 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <application
         android:label="app_mascotas"
         android:name="${applicationName}"
@@ -27,7 +29,7 @@
         </activity>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAX6huPUBxqR2gk_yVwmskZAq0uUtAJJ3A"/>
+            android:value="${mapApiKey}"/>
         <activity 
             android:name=".HeatmapActivity" 
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
