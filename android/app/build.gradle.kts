@@ -8,7 +8,7 @@ plugins {
 android {
     namespace = "com.example.app_mascotas"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -24,8 +24,8 @@ android {
         applicationId = "com.example.app_mascotas"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        minSdk = 21
+        targetSdk = 34
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
@@ -41,4 +41,19 @@ android {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    // Dependencia para Kotlin Standard Library
+    implementation(kotlin("stdlib-jdk8"))
+
+    // Para AppCompatActivity y otras funcionalidades básicas de AndroidX
+    implementation("androidx.appcompat:appcompat:1.6.1") // O la versión más reciente
+    implementation("androidx.core:core-ktx:1.13.1") // O la versión más reciente
+
+    // Si estás usando la librería de utilidades de Google Maps para heatmaps (que es lo que te permite hacer heatmaps en Android nativo)
+    implementation("com.google.maps.android:android-maps-utils:3.0.0") // O la versión más reciente
+
+    // Si tu HeatmapActivity usa Google Maps directamente (aparte del plugin de Flutter)
+    implementation("com.google.android.gms:play-services-maps:18.2.0") // O la versión más reciente
 }
