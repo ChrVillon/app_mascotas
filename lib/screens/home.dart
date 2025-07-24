@@ -12,50 +12,82 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       //extendBodyBehindAppBar: true,
-      appBar: AppBarComponent(
-        title: null,
-        showLeading: true,
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [AppColors.primary, AppColors.secondary],
-            begin: Alignment.topCenter,
-            end: Alignment.center,
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(9),
-          child: ListView(
-            children: [
-              Text('Safe Pets', style: TextStyle(color: AppColors.letterSecondary, fontSize: 30, fontWeight: FontWeight.bold)),
-              SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: 90,
-                    child: ButtonToScreen(text: 'Reporte de perdida',
-                    onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ReportPetScreen())),
-                    ),
+      appBar: AppBarComponent(title: null, showLeading: true),
+      body: Padding(
+        padding: const EdgeInsets.all(9),
+        child: ListView(
+          children: [
+            SizedBox(height: 10),
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 15.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5.0),
+                        child: ButtonToScreen(
+                          text: 'Reporte de perdida',
+                          onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ReportPetScreen(),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 5.0),
+                        child: ButtonToScreen(
+                          text: 'Reporte de encuentro',
+                          onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ReportPetScreen(),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(
-                    width: 90,
-                    child: ButtonToScreen(text: 'Reporte de encuentro',
-                    onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ReportPetScreen())),
-                    ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 35.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5.0),
+                        child: ButtonToScreen(
+                          text: 'Donaciones',
+                          onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ReportPetScreen(),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 5.0),
+                        child: ButtonToScreen(
+                          text: 'Otros',
+                          onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ReportPetScreen(),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(width: 90, child: ButtonToScreen(text: 'Donaciones',
-                  onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ReportPetScreen())),
-                  ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 20),
-              SearchField(hintText: 'Zona/Ubicación')
-            ],
-          ),
+                )
+              ],
+            ),
+          ],
         ),
       ),
     );

@@ -27,7 +27,7 @@ class SearchField extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: AppColors.primary, width: 2),
+            borderSide: BorderSide(color: AppColors.borderFocus, width: 2),
             borderRadius: BorderRadius.circular(10),
           ),
         ),

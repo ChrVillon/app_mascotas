@@ -26,8 +26,21 @@ class SearchableDropdown<T> extends StatelessWidget {
         items: items,
         selectedItem: selectedItem,
         onChanged: onChanged,
+                dropdownBuilder: (context, selectedItem) {
+          return Text(
+            selectedItem?.toString() ?? hintText, // Usa toString() para mostrar el objeto T
+            style: TextStyle(
+              fontSize: 17,
+              color: AppColors.textHint,
+            ),
+          );
+        },
         dropdownDecoratorProps: DropDownDecoratorProps(
           dropdownSearchDecoration: InputDecoration(
+            prefixIcon: Icon(
+              Icons.pets,
+              color: AppColors.iconSecondary,
+            ),
             hintText: hintText,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 12,
@@ -40,7 +53,7 @@ class SearchableDropdown<T> extends StatelessWidget {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: const BorderSide(
-                color: AppColors.primary,
+                color: AppColors.borderFocus,
                 width: 2,
               ),
             ),
@@ -49,11 +62,15 @@ class SearchableDropdown<T> extends StatelessWidget {
         popupProps: PopupProps.menu(
           showSearchBox: search,
           constraints: BoxConstraints(
-            maxHeight: _calculateHeight(items.length),
+            maxHeight: _calculateHeight(items.length, search),
           ),
           searchFieldProps: TextFieldProps(
             decoration: InputDecoration(
-              border: OutlineInputBorder(),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: AppColors.borderFocus, width: 2),
+                borderRadius: BorderRadius.circular(10),
+              ),
               hintText: 'Buscar...',
             ),
           ),
@@ -62,9 +79,13 @@ class SearchableDropdown<T> extends StatelessWidget {
     );
   }
 
-  double _calculateHeight(int itemCount) {
+  double _calculateHeight(int itemCount, bool isSearchable) {
     const double itemHeight = 60.0;
     double calculatedHeight = itemCount * itemHeight;
+
+    if (isSearchable) {
+      calculatedHeight += 72.0; // Add height for search field
+    }
 
     return calculatedHeight;
   }

@@ -5,12 +5,14 @@ class TextFieldComponent extends StatelessWidget {
   final String hintText;
   final TextEditingController controller;
   final IconData? icon;
+  final int maxLines;
 
   const TextFieldComponent({
     super.key,
     required this.hintText,
     required this.controller,
     this.icon,
+    this.maxLines = 1,
   });
 
   @override
@@ -18,18 +20,19 @@ class TextFieldComponent extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextField(
+        maxLines: maxLines,
         controller: controller,
         decoration: InputDecoration(
           hintText: hintText,
-          prefixIcon: Icon(icon, color: const Color(0xFFB9AFAF)),
+          prefixIcon: Icon(icon, color: AppColors.iconSecondary),
           border: OutlineInputBorder(),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide(color: AppColors.border, width: 1.5),
           ),
-                    focusedBorder: OutlineInputBorder(
+          focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: AppColors.primary, width: 2),
+            borderSide: const BorderSide(color: AppColors.borderFocus, width: 2),
           ),
         ),
       ),

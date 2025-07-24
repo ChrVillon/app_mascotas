@@ -10,6 +10,21 @@ class AppBarComponent extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 9),
+          child: Text(
+            'Safe Pets',
+            style: TextStyle(
+              color: AppColors.letterSecondary,
+              fontSize: 34,
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
       backgroundColor: AppColors.appBarPrimary,
       automaticallyImplyLeading: false, // evita botón atrás automático
       leading: showLeading
@@ -21,11 +36,11 @@ class AppBarComponent extends StatelessWidget implements PreferredSizeWidget {
               ),
             )
           : IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-      ),
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
       title: showLeading
           ? const Text(
               'Bienvenido Usuario',
@@ -54,5 +69,5 @@ class AppBarComponent extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight * 2.1);
 }
