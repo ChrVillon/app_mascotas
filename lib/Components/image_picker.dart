@@ -1,19 +1,13 @@
+import 'dart:io';
+import 'dart:convert';
 import 'package:app_mascotas/styles/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io'; // Necesario para trabajar con File
 
 class PhotoUploadField extends StatefulWidget {
-  final ValueChanged<File?>? onImageSelected;
-  final String labelText; // Nuevo: Texto para indicar la acción
-  final IconData defaultIcon; // Nuevo: Icono a mostrar cuando no hay imagen
+  final ValueChanged<String?>? onImageBase64Selected;
 
-  const PhotoUploadField({
-    super.key,
-    this.onImageSelected,
-    this.labelText = 'Imagen de tu mascota', // Texto por defecto
-    this.defaultIcon = Icons.camera_alt, // Icono por defecto
-  });
+  const PhotoUploadField({super.key, this.onImageBase64Selected});
 
   @override
   State<PhotoUploadField> createState() => _PhotoUploadFieldState();
@@ -27,16 +21,16 @@ class _PhotoUploadFieldState extends State<PhotoUploadField> {
     final pickedFile = await picker.pickImage(source: source);
 
     if (pickedFile != null) {
-      setState(() {
-        _selectedImage = File(pickedFile.path);
-      });
-      widget.onImageSelected?.call(_selectedImage);
-    } else {
-      print('No se seleccionó ninguna imagen.');
+      File imageFile = File(pickedFile.path);
+      final bytes = await imageFile.readAsBytes();
+      final base64Image = base64Encode(bytes);
+
+      setState(() => _selectedImage = imageFile);
+      widget.onImageBase64Selected?.call(base64Image);
     }
   }
 
-  void _showImageSourceActionSheet(BuildContext context) {
+  void _showImageSourceSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
       builder: (context) => SafeArea(
@@ -53,24 +47,12 @@ class _PhotoUploadFieldState extends State<PhotoUploadField> {
             ),
             ListTile(
               leading: const Icon(Icons.photo_library),
-              title: const Text('Seleccionar de la galería'),
+              title: const Text('Seleccionar de galería'),
               onTap: () {
                 Navigator.pop(context);
                 _pickImage(ImageSource.gallery);
               },
             ),
-            if (_selectedImage != null) // Opción para eliminar si ya hay una imagen
-              ListTile(
-                leading: const Icon(Icons.delete_forever, color: Colors.red),
-                title: const Text('Eliminar foto', style: TextStyle(color: Colors.red)),
-                onTap: () {
-                  Navigator.pop(context);
-                  setState(() {
-                    _selectedImage = null;
-                  });
-                  widget.onImageSelected?.call(null);
-                },
-              ),
           ],
         ),
       ),
@@ -79,18 +61,17 @@ class _PhotoUploadFieldState extends State<PhotoUploadField> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min, // Ajusta al tamaño del contenido
-      children: [
-        GestureDetector( // <--- HACEMOS EL CONTENEDOR CLICKABLE
-          onTap: () => _showImageSourceActionSheet(context),
-          child: Container(
-            width: 150, // Tamaño de visualización, ajusta a tus necesidades
-            height: 150,
+    return GestureDetector(
+      onTap: () => _showImageSourceSheet(context),
+      child: Column(
+        children: [
+          Container(
+            width: 200,
+            height: 200,
             decoration: BoxDecoration(
-              color: AppColors.fillTextField,
+              color: const Color(0x00EEEEEE),
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.grey, width: 1.5),
+              border: Border.all(color: Colors.grey, width: 1),
             ),
             child: _selectedImage != null
                 ? ClipRRect(
@@ -102,32 +83,32 @@ class _PhotoUploadFieldState extends State<PhotoUploadField> {
                       height: double.infinity,
                     ),
                   )
-                : Center(
-                    child: Column( // Centramos el icono y el texto de ayuda
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          widget.defaultIcon,
-                          size: 60,
-                          color: AppColors.iconSecondary, // Usamos un color secundario para el icono
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                          child: Text(
-                            widget.labelText,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontSize: 12,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.add_a_photo,
+                        size: 80,
+                        color: AppColors.iconSecondary,
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Agregar Foto de tu mascota',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ],
                   ),
           ),
-        ),
-      ],
+          if (_selectedImage != null)
+            TextButton(
+              onPressed: () {
+                setState(() => _selectedImage = null);
+                widget.onImageBase64Selected?.call(null);
+              },
+              child: const Text('Eliminar Foto', style: TextStyle(color: Colors.red)),
+            ),
+        ],
+      ),
     );
   }
 }

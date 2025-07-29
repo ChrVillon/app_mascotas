@@ -81,15 +81,6 @@ class _MapPickerState extends State<MapPicker> {
                     },
                   ),
                 ),
-                if (_pickedPosition != null)
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'Ubicación seleccionada:\nLat: ${_pickedPosition!.latitude}, Lng: ${_pickedPosition!.longitude}',
-                      style: const TextStyle(fontSize: 16),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
               ],
             ),
     );

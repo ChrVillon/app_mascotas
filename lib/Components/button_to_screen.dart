@@ -1,64 +1,67 @@
 import 'package:app_mascotas/styles/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ButtonToScreen extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
-  // Puedes añadir un tamaño opcional si quieres que sea configurable
-  final double buttonSize; // Nuevo parámetro para el tamaño
+  final String svgPath;
+  final double width;
+  final double height;
 
   const ButtonToScreen({
     super.key,
     required this.text,
     required this.onPressed,
-    this.buttonSize = 150.0, // Tamaño por defecto, puedes ajustarlo
+    required this.svgPath,
+    this.width = 160.0,
+    this.height = 150.0,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        // Usamos SizedBox para darle un tamaño fijo al ElevatedButton
-        SizedBox(
-          width: buttonSize,
-          height: buttonSize,
-          child: ElevatedButton(
-            onPressed: onPressed,
-            style: ElevatedButton.styleFrom(
-              // Establece la forma a un círculo
-              shape: CircleBorder(
-                side: BorderSide(color: AppColors.buttonBorder, width: 3.0),
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        width: width,
+        height: height,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.buttonBackground,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: AppColors.buttonBorder,
+            width: 2.0,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 10,
+              offset: const Offset(0, 7),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              svgPath,
+              width: 50,
+              height: 50,
+            ),
+            const SizedBox(height: 10),
+            Text(
+              text,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: AppColors.letterTertiary,
               ),
-              // Color de fondo del botón
-              backgroundColor: AppColors.buttonTransparent,
-              // Ajusta el padding para controlar el tamaño del área interactiva del botón
-              // Puedes experimentar con esto si el 'buttonSize' no es suficiente
-              padding: EdgeInsets.zero, // Padding inicial, el tamaño lo da el SizedBox
-              // No tiene sombra por defecto al ser transparente, pero puedes agregarla aquí si quieres.
-              elevation: 9, // Generalmente un FAB tiene elevación, pero si es transparente, 0 es común.
+              textAlign: TextAlign.center,
             ),
-            // El contenido del botón: el icono
-            child: Icon(
-              Icons.pets,
-              color: AppColors.iconColor,
-              size: buttonSize * 0.5, // El icono será el 50% del tamaño del botón
-            ),
-          ),
+          ],
         ),
-        const SizedBox(height: 10),
-        SizedBox(
-          width: buttonSize * 1.1,
-          child: Text(
-            text,
-            style: TextStyle(
-              color: AppColors.letterPrimary,
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ],
+      ),
     );
   }
 }

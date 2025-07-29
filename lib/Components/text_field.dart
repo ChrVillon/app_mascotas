@@ -6,6 +6,7 @@ class TextFieldComponent extends StatelessWidget {
   final TextEditingController controller;
   final IconData? icon;
   final int maxLines;
+  final FocusNode? focusNode; // <-- ADD THIS LINE
 
   const TextFieldComponent({
     super.key,
@@ -13,6 +14,7 @@ class TextFieldComponent extends StatelessWidget {
     required this.controller,
     this.icon,
     this.maxLines = 1,
+    this.focusNode, // <-- ADD THIS LINE
   });
 
   @override
@@ -22,10 +24,11 @@ class TextFieldComponent extends StatelessWidget {
       child: TextField(
         maxLines: maxLines,
         controller: controller,
+        focusNode: focusNode, // <-- ADD THIS LINE: Assign the FocusNode here
         decoration: InputDecoration(
           hintText: hintText,
           prefixIcon: Icon(icon, color: AppColors.iconSecondary),
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(), // Consider making this const if possible
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide(color: AppColors.border, width: 1.5),

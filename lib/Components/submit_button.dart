@@ -1,3 +1,4 @@
+import 'package:app_mascotas/styles/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class SubmitButton extends StatefulWidget {
@@ -69,7 +70,7 @@ class _SubmitButtonState extends State<SubmitButton> {
     } catch (e) {
       // 3. Manejar errores
       print('Error al enviar datos: $e');
-      _showSnackBar('Error al enviar datos: ${e.toString()}', Colors.red);
+      _showSnackBar('Error al enviar datos. ${e.toString()}', Colors.red);
     } finally {
       // 4. Finalizar el estado de carga
       if (widget.isLoadingNotifier == null) {
@@ -98,8 +99,7 @@ class _SubmitButtonState extends State<SubmitButton> {
       onPressed: _handleSubmit,
       style: ElevatedButton.styleFrom(
         // Ejemplo de estilos, personaliza a tu gusto
-        minimumSize: const Size(double.infinity, 50), // Ancho completo, altura fija
-        backgroundColor: _isLoading ? Colors.grey : Colors.blue, // Gris cuando está cargando
+        backgroundColor: _isLoading ? Colors.grey : AppColors.buttonPrimColor, // Gris cuando está cargando
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),

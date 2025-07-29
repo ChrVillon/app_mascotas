@@ -8,6 +8,7 @@ class SearchableDropdown<T> extends StatelessWidget {
   final String hintText;
   final void Function(T?) onChanged;
   final bool search;
+  final IconData icon; // Icono por defecto
 
   const SearchableDropdown({
     super.key,
@@ -16,6 +17,7 @@ class SearchableDropdown<T> extends StatelessWidget {
     required this.hintText,
     required this.onChanged,
     required this.search,
+    required this.icon,
   });
 
   @override
@@ -38,8 +40,9 @@ class SearchableDropdown<T> extends StatelessWidget {
         dropdownDecoratorProps: DropDownDecoratorProps(
           dropdownSearchDecoration: InputDecoration(
             prefixIcon: Icon(
-              Icons.pets,
+              icon,
               color: AppColors.iconSecondary,
+              
             ),
             hintText: hintText,
             contentPadding: const EdgeInsets.symmetric(

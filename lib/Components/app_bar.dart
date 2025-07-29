@@ -1,3 +1,4 @@
+import 'package:app_mascotas/screens/notifications.dart';
 import 'package:app_mascotas/styles/app_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -10,29 +11,15 @@ class AppBarComponent extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 9),
-          child: Text(
-            'Safe Pets',
-            style: TextStyle(
-              color: AppColors.letterSecondary,
-              fontSize: 34,
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ),
       backgroundColor: AppColors.appBarPrimary,
-      automaticallyImplyLeading: false, // evita botón atrás automático
+      automaticallyImplyLeading: false,
       leading: showLeading
           ? Padding(
-              padding: const EdgeInsets.only(left: 8.0),
+              padding: const EdgeInsets.only(left: 8.0,),
               child: CircleAvatar(
+                child: Icon(Icons.person, color: AppColors.iconSecondary),
                 radius: 21,
-                backgroundColor: Colors.white, // puedes usar imagen o inicial
+                backgroundColor: Colors.white,
               ),
             )
           : IconButton(
@@ -60,14 +47,15 @@ class AppBarComponent extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         IconButton(
           icon: Icon(Icons.notifications, color: AppColors.iconColor),
-          onPressed: () {
-            // Acción de notificaciones
-          },
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => NotificacionesScreen()),
+          ),
         ),
       ],
     );
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight * 2.1);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
