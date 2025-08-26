@@ -82,6 +82,7 @@ class _FoundPetScreenState extends State<FoundPetScreen> {
         'latitud': selectedLocation!.latitude,
         'longitud': selectedLocation!.longitude,
         'imagenBase64': base64Image,
+        'notificado': false, // Agregar el campo 'notificado'
         'timestamp': FieldValue.serverTimestamp(),
       };
 

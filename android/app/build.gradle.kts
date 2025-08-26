@@ -62,7 +62,7 @@ dependencies {
     // Para AppCompatActivity y otras funcionalidades básicas de AndroidX
     implementation("androidx.appcompat:appcompat:1.6.1") // O la versión más reciente
     implementation("androidx.core:core-ktx:1.13.1") // O la versión más reciente
-
+    implementation("com.google.firebase:firebase-messaging:23.1.0") // O la versión más reciente
     // Si estás usando la librería de utilidades de Google Maps para heatmaps (que es lo que te permite hacer heatmaps en Android nativo)
     implementation("com.google.maps.android:android-maps-utils:3.0.0") // O la versión más reciente
 

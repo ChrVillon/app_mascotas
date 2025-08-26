@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:math';
 import 'package:app_mascotas/styles/app_colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'heatmap_native_screen.dart'; // Asegúrate de tener esta pantalla
 
 class NotificacionesScreen extends StatefulWidget {
@@ -19,56 +21,65 @@ class _NotificacionesScreenState extends State<NotificacionesScreen> {
   @override
   void initState() {
     super.initState();
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Mensaje recibido en primer plano: ${message.notification?.title}');
+      // Aquí puedes mostrar una notificación local si lo deseas
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('Notificación abierta: ${message.notification?.title}');
+      // Manejar la navegación o acciones al abrir la notificación
+    });
+
     _buscarCoincidencias();
   }
 
-Future<void> _buscarCoincidencias() async {
-  final firestore = FirebaseFirestore.instance;
-  final currentUser = FirebaseAuth.instance.currentUser;
+  Future<void> _buscarCoincidencias() async {
+    final firestore = FirebaseFirestore.instance;
+    final currentUser = FirebaseAuth.instance.currentUser;
 
-  if (currentUser == null) {
+    if (currentUser == null) {
+      setState(() {
+        _coincidencias = [];
+        _cargando = false;
+      });
+      return;
+    }
+
+    // Solo reportes de pérdida del usuario actual
+    final perdidasSnapshot = await firestore
+        .collection('pet_reports')
+        .where('uid', isEqualTo: currentUser.uid)
+        .get();
+
+    // Todos los reportes de encuentros
+    final encuentrosSnapshot = await firestore.collection('found_reports').get();
+
+    final perdidas = perdidasSnapshot.docs.map((d) => d.data()).toList();
+    final encuentros = encuentrosSnapshot.docs.map((d) => d.data()).toList();
+
+    final coincidencias = _hacerMatch(
+      perdidas: perdidas,
+      encuentros: encuentros,
+    );
+
     setState(() {
-      _coincidencias = [];
+      _coincidencias = coincidencias;
       _cargando = false;
     });
-    return;
   }
-
-  // Solo reportes de pérdida del usuario actual
-  final perdidasSnapshot = await firestore
-      .collection('pet_reports')
-      .where('uid', isEqualTo: currentUser.uid)
-      .get();
-
-  // Todos los reportes de encuentros
-  final encuentrosSnapshot = await firestore
-      .collection('found_reports')
-      .get();
-
-  final perdidas = perdidasSnapshot.docs.map((d) => d.data()).toList();
-  final encuentros = encuentrosSnapshot.docs.map((d) => d.data()).toList();
-
-  final coincidencias = _hacerMatch(
-    perdidas: perdidas,
-    encuentros: encuentros,
-  );
-
-  setState(() {
-    _coincidencias = coincidencias;
-    _cargando = false;
-  });
-}
 
   List<Map<String, dynamic>> _hacerMatch({
     required List<Map<String, dynamic>> perdidas,
     required List<Map<String, dynamic>> encuentros,
-    double maxDistancia = 300.0,
+    double maxDistancia = 1000.0,
   }) {
     List<Map<String, dynamic>> coincidencias = [];
 
     for (var perdida in perdidas) {
       for (var encuentro in encuentros) {
-        final tipoIgual = perdida['tipo'] == encuentro['tipo'];
+      final tipoIgual = perdida['tipo'] == encuentro['tipo'];
         final razaIgual = perdida['raza'] == encuentro['raza'];
         final tamanoIgual = perdida['tamano'] == encuentro['tamano'];
 
@@ -90,8 +101,7 @@ Future<void> _buscarCoincidencias() async {
     return coincidencias;
   }
 
-  double _calcularDistancia(
-      double lat1, double lon1, double lat2, double lon2) {
+  double _calcularDistancia(double lat1, double lon1, double lat2, double lon2) {
     const radioTierra = 6371000;
     final dLat = _gradosARadianes(lat2 - lat1);
     final dLon = _gradosARadianes(lon2 - lon1);
@@ -121,7 +131,10 @@ Future<void> _buscarCoincidencias() async {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('No hay coincidencias suficientes para generar el mapa de calor.')),
+        SnackBar(
+          content: Text(
+              'No hay coincidencias suficientes para generar el mapa de calor.'),
+        ),
       );
     }
   }
@@ -148,8 +161,13 @@ Future<void> _buscarCoincidencias() async {
                   itemBuilder: (context, index) {
                     final rep = _coincidencias[index];
                     return ListTile(
-                      leading: rep['imagen'] != null
-                          ? Image.network(rep['imagen'], width: 50, height: 50, fit: BoxFit.cover)
+                      leading: rep['imagenBase64'] != null
+                          ? Image.memory(
+                              base64Decode(rep['imagenBase64']),
+                              width: 50,
+                              height: 50,
+                              fit: BoxFit.cover,
+                            )
                           : Icon(Icons.pets),
                       title: Text('${rep['tipo']} - ${rep['raza']}'),
                       subtitle: Text('${rep['tamano']}'),
